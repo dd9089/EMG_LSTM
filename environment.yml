@@ -1,0 +1,74 @@
+# BioRobotics Lab 1 - EMG and LSL Environment
+# 
+# Installation (no admin rights required):
+#   conda env create -f environment.yml
+#   conda activate biorobotics
+#
+# Or with mamba (faster):
+#   mamba env create -f environment.yml
+name: biorobotics
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  # Core Python
+  - python=3.11
+  - pip>=23.0
+  
+  # Scientific Computing
+  - numpy>=1.24
+  - scipy>=1.11
+  - pandas>=2.0
+  - scikit-learn>=1.3
+  - torch>=2.0  # PyTorch for deep learning
+  - torchvision>=0.15
+  
+  # Visualization
+  - matplotlib>=3.7
+  - pyqtgraph>=0.13
+  
+  # Jupyter
+  - jupyterlab>=4.0
+  - ipywidgets>=8.0
+  - ipympl>=0.9  # Interactive matplotlib in Jupyter
+  
+  # LSL (Lab Streaming Layer)
+  - liblsl>=1.16
+  
+  # Data formats
+  - pyxdf>=1.16  # XDF file format for LSL recordings
+  - h5py>=3.9    # HDF5 support
+  
+  # Serial communication (BioRadio direct Python interface)
+  - pyserial>=3.5
+
+  # Additional utilities
+  - pyyaml>=6.0
+  - tqdm>=4.65
+  - click>=8.1   # CLI tools
+  
+  # Pip-only packages
+  - pip:
+    # Myo armband support - TWO BACKENDS AVAILABLE:
+    # 
+    # 1. dl-myo (RECOMMENDED): Native Bluetooth - NO DONGLE NEEDED
+    #    Works with computer's built-in Bluetooth
+    #    Supports connecting to specific Myo by MAC address
+    - dl-myo
+    
+    # 2. pyomyo (FALLBACK): Requires the blue Myo Bluetooth dongle
+    #    Uncomment if dl-myo doesn't work or you prefer using the dongle
+    # - git+https://github.com/PerlinWarp/pyomyo.git
+    
+    # IMPORTANT: Close MyoConnect before using either backend!
+    
+    # Signal processing
+    - neurokit2>=0.2  # Biosignal processing toolkit
+    
+    # Testing
+    - pytest>=7.0
+    
+    # GUI and LSL (pip versions for better compatibility)
+    - pyqt6
+    - pylsl
+    - seaborn
