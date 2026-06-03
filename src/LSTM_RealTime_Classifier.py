@@ -231,14 +231,13 @@ class LSLEMGClassifier:
         }
 
     def _send_gripper_command(self, position, effort):
-        """Send ROS2 gripper command in a background thread (non-blocking)."""
         cmd = [
             "ros2", "action", "send_goal",
-            "/gripper/robotiq_gripper_controller/gripper_cmd",
+            "/robotiq_gripper_controller/gripper_cmd",
             "control_msgs/action/GripperCommand",
             f"{{command: {{position: {position}, max_effort: {effort}}}}}"
         ]
-        subprocess.run(cmd)  # blocks only inside this thread
+        subprocess.run(cmd)
 
     def display_prediction(self, prediction):
         """Display prediction in console and dispatch gripper command if gesture changed."""
