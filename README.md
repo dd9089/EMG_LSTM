@@ -22,11 +22,8 @@ Myo EMG (200 Hz) → BiLSTM classifier → Robotiq 2F-85 gripper position + effo
 
 ### Hardware
 - Myo armband
-- UR5e robot arm (default IP: `192.168.131.143`)
+- Kinova robot arm (default IP: `192.168.1.10`)
 - Robotiq 2F-85 gripper
-- UR Teach Pendant configured:
-  - Tool Communication: Enabled — 115200 baud, no parity, 1 stop bit
-  - Tool Voltage: 24V
 
 ### Software
 - Ubuntu 22.04
@@ -89,28 +86,13 @@ You need **4 terminals** total. Start them in order and keep each running.
 
 ### Terminal 1 — Robot driver + MoveIt + RViz
 ```bash
-cd ~/ur5e/robotiq_gripper_ur5e
-./1_start_robot_moveit.sh
+cd ~/EMG_LSTM/src
+Ros2 launch kinova_gen3_7dof_robotiq_2f_85_moveit_config robot.launch.py robot_ip:=192.168.1.10 use_internal_bus_gripper_comm:=true
 ```
 Wait ~15 seconds for RViz to open with the robot model.
 
-### Terminal 2 — Activate arm controller
-```bash
-cd ~/ur5e/robotiq_gripper_ur5e
-./2_activate_controller.sh
-```
-You should see `✓ Controller activated successfully!`
 
-### Terminal 2 — Start gripper
-```bash
-cd ~/ur5e/robotiq_gripper_ur5e
-source /opt/ros/humble/setup.bash
-source install/setup.bash
-ros2 launch ur5e_vision_config robotiq_gripper.launch.py
-```
-Wait for the gripper to cycle open/close once — it is now active.
-
-### Terminal 3 — Myo streaming
+### Terminal 2 — Myo streaming
 ```bash
 python myo_interface.py --select
 ```
@@ -121,7 +103,7 @@ Expected output:
 Myo_EMG: 8 ch @ 200.0 Hz
 ```
 
-### Terminal 4 — EMG classifier + IMU teleoperation
+### Terminal 3 — EMG classifier + IMU teleoperation
 ```bash
 source /opt/ros/humble/setup.bash
 python3 LSTM_RealTime_Classifier.py
@@ -132,8 +114,7 @@ python3 LSTM_RealTime_Classifier.py
 ## Stopping Everything
 
 ```bash
-cd ~/ur5e/robotiq_gripper_ur5e
-./kill_all.sh
+Ctr+C on each terminal
 ```
 
 ---
@@ -175,7 +156,7 @@ Effort values map to the Robotiq 2F-85 force range (20–235 N):
 
 Test effort levels without running the classifier:
 ```bash
-ros2 action send_goal /gripper/robotiq_gripper_controller/gripper_cmd \
+ros2 action send_goal /robotiq_gripper_controller/gripper_cmd \
   control_msgs/action/GripperCommand \
   "{command: {position: 0.56, max_effort: 100.0}}"
 ```
